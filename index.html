@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f1f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            color: #d81b60;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .heart {
+            color: #d81b60;
+            font-size: 8rem;
+            animation: pulse 1.5s infinite;
+            margin: 20px 0;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .btn-yes {
+            background-color: #d81b60;
+            color: white;
+        }
+        
+        .btn-yes:hover {
+            transform: scale(1.1);
+            background-color: #c2185b;
+        }
+        
+        .btn-no {
+            background-color: #e0e0e0;
+            color: #333;
+            position: relative;
+        }
+        
+        .btn-no:hover {
+            animation: moveAway 0.5s forwards;
+        }
+        
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes moveAway {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(calc(100px * var(--direction-x)), calc(100px * var(--direction-y))); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Will You Marry Me?</h1>
+        <div class="heart">❤️</div>
+        <p>I've been thinking about this for a long time, and I can't imagine my life without you.</p>
+        <p>You've made me happier than I ever thought possible, and I want to spend the rest of my life with you.</p>
+        <div class="buttons">
+            <button class="btn btn-yes" id="yesBtn">YES!</button>
+            <button class="btn btn-no" id="noBtn">No</button>
+        </div>
+    </div>
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const container = document.querySelector('.container');
+        const celebration = document.getElementById('celebration');
+        
+        // Make the "No" button run away
+        noBtn.addEventListener('mouseover', function() {
+            const directionX = Math.random() > 0.5 ? 1 : -1;
+            const directionY = Math.random() > 0.5 ? 1 : -1;
+            noBtn.style.setProperty('--direction-x', directionX);
+            noBtn.style.setProperty('--direction-y', directionY);
+        });
+        
+        // Celebration when "Yes" is clicked
+        yesBtn.addEventListener('click', function() {
+            // Change the content
+            container.innerHTML = `
+                <h1>YAAAY! ❤️</h1>
+                <div class="heart">❤️</div>
+                <p>I knew you would say yes! I love you so much!</p>
+                <p>I promise to love you forever and always.</p>
+            `;
+            
+            // Start celebration animation (hearts falling)
+            celebration.style.display = 'block';
+            for (let i = 0; i < 100; i++) {
+                createHeart();
+            }
+        });
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.style.position = 'absolute';
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = -20 + 'px';
+            heart.style.opacity = Math.random() * 0.5 + 0.5;
+            heart.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+            heart.style.color = `hsl(${340 + Math.random() * 20}, 100%, 60%)`;
+            celebration.appendChild(heart);
+            
+            // Add falling animation
+            const keyframes = `
+                @keyframes fall {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                    }
+                    100% {
+                        transform: translateY(105vh) rotate(${Math.random() * 360}deg);
+                    }
+                }
+            `;
+            const style = document.createElement('style');
+            style.innerHTML = keyframes;
+            document.head.appendChild(style);
+            
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.remove();
+                style.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
